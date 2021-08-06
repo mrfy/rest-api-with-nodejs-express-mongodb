@@ -8,11 +8,11 @@ const cors = require("cors");
 app.use(cors());
 app.use(bodyParser.json());
 
-//IMPORT ROUTE
-const postRoute = require("./routes/posts");
-const userRoute = require("./routes/user");
-const workRoute = require("./routes/work");
-const skillRoute = require("./routes/skills");
+//IMPORT ROUTEe
+import postRoute from "./routes/posts";
+import userRoute from "./routes/user";
+import workRoute from "./routes/work";
+import skillRoute from "./routes/skills";
 
 //INIT ROUTE
 app.use("/user", userRoute);
@@ -27,7 +27,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("MongoDB conected ..."))
-  .catch((err) => console.log(err));
+  .catch((err: any) => console.log(err));
 //START SERVER
 
 const port = process.env.PORT;

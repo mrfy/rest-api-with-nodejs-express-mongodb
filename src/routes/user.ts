@@ -1,4 +1,5 @@
-const express = require("express");
+import express, {Request, Response} from 'express'
+import { IUserModel } from '../models/UserModel';
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/UserModel");
@@ -43,7 +44,7 @@ router.put("/:user_id", checkAuth, (req, res) => {
     .then(() => {
       res.json(req.body);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       res.json({ message: err });
     });
 });
@@ -64,20 +65,20 @@ router.delete("/:userID", checkAuth, async (req, res) => {
 router.post("/login", (req, res) => {
   UserModel.findOne({ email: req.body.email })
     .exec()
-    .then((user) => {
+    .then((user: IUserModel) => {
       if (user) {
         verifyPassword(user, req, res);
       } else {
         res.json({ message: "Incorrect email or password..." });
       }
     })
-    .catch((error) => {
+    .catch((error: any) => {
       res.status(500).json({ message: `error : ${error}` });
     });
 });
 //VERIFY PASSWORD
-const verifyPassword = (user, req, res) => {
-  bcrypt.compare(req.body.password, user.password, (err, result) => {
+const verifyPassword = (user:IUserModel, req: Request, res: Response) => {
+  bcrypt.compare(req.body.password, user.password, (err: any, result: any) => {
     if (err) return res.status(500).json({ message: err });
     else {
       if (result) return getToken(user, res);
@@ -86,7 +87,7 @@ const verifyPassword = (user, req, res) => {
   });
 };
 
-const getToken = (user, res) => {
+const getToken = (user:IUserModel, res: Response) => {
   const token = jwt.sign(
     { email: user.email, userId: user._id },
     process.env.JWT_KEY,
@@ -99,4 +100,4 @@ const getToken = (user, res) => {
   });
 };
 
-module.exports = router;
+export default router;
