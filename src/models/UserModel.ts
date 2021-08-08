@@ -1,5 +1,6 @@
+import { Ref, Severity, index, modelOptions, plugin, prop } from '@typegoose/typegoose';
 // const mongoose = require('mongoose');
-import mongoose,{ Schema, Document } from 'mongoose';
+import mongoose,{ Document, Schema } from 'mongoose';
 
 export interface IUserModel extends Document {
 

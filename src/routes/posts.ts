@@ -1,8 +1,8 @@
-const express = require('express');
+import express, {Request, Response} from 'express'
 const router = express.Router();
 const PostModel = require('../models/Post');
 
-router.get('/',async(req,res)=>{
+router.get('/',async(req: Request,res: Response)=>{
     try {
        const posts = await PostModel.find()
        res.json(posts);
@@ -11,7 +11,7 @@ router.get('/',async(req,res)=>{
     }
 })
 
-router.post('/',async (req,res)=>{
+router.post('/',async (req: Request,res: Response)=>{
     try {
         let post = new PostModel({ title: req.body.title });
         let data = await post.save()
@@ -21,4 +21,4 @@ router.post('/',async (req,res)=>{
     }
 });
 
-module.exports = router;
+export default router;
