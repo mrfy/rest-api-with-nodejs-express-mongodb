@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 
 import PostModel from '../models/Post';
+
 const router = express.Router();
 // const PostModel = require('../models/Post');
 
