@@ -36,8 +36,8 @@ export class User {
   @prop({ required: true, type: () => String })
   password!: string;
 
-  @prop({ required: false, default: Date.now() })
-  created!: Date;
+  @prop({ required: false, type: () => Date, default: Date.now() })
+  created!: string;
 
   @prop({ required: false, type: () => String })
   header_text!: string;

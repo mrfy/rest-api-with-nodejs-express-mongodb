@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 //IMPORT ROUTEe
 import postRoute from './routes/posts';
+import reportsRoute from './routes/reports';
 import skillRoute from './routes/skills';
 import userRoute from './routes/user';
 import workRoute from './routes/work';
@@ -21,6 +22,7 @@ app.use('/user', userRoute);
 app.use('/posts', postRoute);
 app.use('/work', workRoute);
 app.use('/skill', skillRoute);
+app.use('/reports', reportsRoute);
 
 //MONGODB CONNECTION
 mongoose

@@ -1,13 +1,14 @@
-import express, {Request, Response} from 'express'
+import express, { Request, Response } from 'express';
+
 import { IUserModel } from '../models/UserModel';
 const router = express.Router();
-const bcrypt = require("bcrypt");
-const UserModel = require("../models/UserModel");
-var jwt = require("jsonwebtoken");
-const checkAuth = require("../middleware/checkAuth");
+const bcrypt = require('bcrypt');
+const UserModel = require('../models/UserModel');
+var jwt = require('jsonwebtoken');
+const checkAuth = require('../middleware/checkAuth');
 
 //GET ALL USERS
-router.get("/", checkAuth, async (req, res) => {
+router.get('/', checkAuth, async (req, res) => {
   try {
     const users = await UserModel.find();
     res.status(201).json(users);
@@ -17,11 +18,11 @@ router.get("/", checkAuth, async (req, res) => {
 });
 
 //CREATE NEW USER
-router.post("/signup", async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
     const existingUser = await UserModel.find({ email: req.body.email });
     if (existingUser.length !== 0) {
-      return res.status(409).json({ message: "The User does exist ..." });
+      return res.status(409).json({ message: 'The User does exist ...' });
     }
     const hashPassword = await bcrypt.hash(req.body.password, 10);
     const user = new UserModel({
@@ -38,7 +39,7 @@ router.post("/signup", async (req, res) => {
 });
 
 //UPDATE USER INFO
-router.put("/:user_id", checkAuth, (req, res) => {
+router.put('/:user_id', checkAuth, (req, res) => {
   UserModel.updateMany({ _id: req.params.user_id }, { $set: req.body })
     .exec()
     .then(() => {
@@ -50,11 +51,11 @@ router.put("/:user_id", checkAuth, (req, res) => {
 });
 
 //DELETE USER
-router.delete("/:userID", checkAuth, async (req, res) => {
+router.delete('/:userID', checkAuth, async (req, res) => {
   try {
     const deletedUser = await UserModel.deleteOne({ _id: req.params.userID });
     res.status(200).json({
-      message: "User been deleted ...",
+      message: 'User been deleted ...',
       data: deletedUser,
     });
   } catch (error) {
@@ -62,14 +63,14 @@ router.delete("/:userID", checkAuth, async (req, res) => {
   }
 });
 
-router.post("/login", (req, res) => {
+router.post('/login', (req, res) => {
   UserModel.findOne({ email: req.body.email })
     .exec()
     .then((user: IUserModel) => {
       if (user) {
         verifyPassword(user, req, res);
       } else {
-        res.json({ message: "Incorrect email or password..." });
+        res.json({ message: 'Incorrect email or password...' });
       }
     })
     .catch((error: any) => {
@@ -77,24 +78,24 @@ router.post("/login", (req, res) => {
     });
 });
 //VERIFY PASSWORD
-const verifyPassword = (user:IUserModel, req: Request, res: Response) => {
+const verifyPassword = (user: IUserModel, req: Request, res: Response) => {
   bcrypt.compare(req.body.password, user.password, (err: any, result: any) => {
     if (err) return res.status(500).json({ message: err });
     else {
       if (result) return getToken(user, res);
-      else return res.json({ message: "Authentication failed ..." });
+      else return res.json({ message: 'Authentication failed ...' });
     }
   });
 };
 
-const getToken = (user:IUserModel, res: Response) => {
+const getToken = (user: IUserModel, res: Response) => {
   const token = jwt.sign(
     { email: user.email, userId: user._id },
     process.env.JWT_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: '1h' },
   );
   res.json({
-    message: "Auth successful",
+    message: 'Auth successful',
     user,
     token: token,
   });
