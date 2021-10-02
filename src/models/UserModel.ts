@@ -65,6 +65,4 @@ export class User {
 }
 // ss
 
-const UserModel = getModelForClass(User);
-
-export default UserModel;
+export const UserModel = getModelForClass(User);

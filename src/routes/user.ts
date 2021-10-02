@@ -1,10 +1,10 @@
+import { User, UserModel } from '../models';
 import express, { Request, Response } from 'express';
 
-import { IUserModel } from '../models/UserModel';
+import jwt from 'jsonwebtoken';
+
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const UserModel = require('../models/UserModel');
-var jwt = require('jsonwebtoken');
 const checkAuth = require('../middleware/checkAuth');
 
 //GET ALL USERS
@@ -18,9 +18,10 @@ router.get('/', checkAuth, async (req, res) => {
 });
 
 //CREATE NEW USER
-router.post('/signup', async (req, res) => {
+router.post('/signup', async (req: Request, res: Response) => {
   try {
     const existingUser = await UserModel.find({ email: req.body.email });
+
     if (existingUser.length !== 0) {
       return res.status(409).json({ message: 'The User does exist ...' });
     }
@@ -65,8 +66,10 @@ router.delete('/:userID', checkAuth, async (req, res) => {
 
 router.post('/login', (req, res) => {
   UserModel.findOne({ email: req.body.email })
+    .lean()
     .exec()
-    .then((user: IUserModel) => {
+    .then((user: any) => {
+      console.log('🚀 ~ file: user.ts ~ line 71 ~ .then ~ user', user);
       if (user) {
         verifyPassword(user, req, res);
       } else {
@@ -78,7 +81,7 @@ router.post('/login', (req, res) => {
     });
 });
 //VERIFY PASSWORD
-const verifyPassword = (user: IUserModel, req: Request, res: Response) => {
+const verifyPassword = (user: any, req: Request, res: Response) => {
   bcrypt.compare(req.body.password, user.password, (err: any, result: any) => {
     if (err) return res.status(500).json({ message: err });
     else {
@@ -88,16 +91,22 @@ const verifyPassword = (user: IUserModel, req: Request, res: Response) => {
   });
 };
 
-const getToken = (user: IUserModel, res: Response) => {
+const getToken = (user: any, res: Response) => {
   const token = jwt.sign(
     { email: user.email, userId: user._id },
-    process.env.JWT_KEY,
+    process.env.JWT_KEY as string,
     { expiresIn: '1h' },
   );
+  const oneDayToSeconds = 24 * 60 * 60;
+
+  res.cookie('access_token', token, {
+    maxAge: oneDayToSeconds,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+  });
   res.json({
     message: 'Auth successful',
     user,
-    token: token,
   });
 };
 

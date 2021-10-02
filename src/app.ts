@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 //IMPORT ROUTEe
 import postRoute from './routes/posts';
@@ -8,7 +9,6 @@ import userRoute from './routes/user';
 import workRoute from './routes/work';
 
 const app = express();
-const mongoose = require('mongoose');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -26,13 +26,13 @@ app.use('/reports', reportsRoute);
 
 //MONGODB CONNECTION
 mongoose
-  .connect(process.env.DATABASE_URL, {
+  .connect(process.env.DATABASE_URL as string, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true,
   })
-  .then(() => console.log('MongoDB conected ...'))
+  .then((mongo) => console.log('MongoDB conected OK 💿', mongo.modelNames()))
   .catch((err: any) => console.log('🚀 error !!', err));
 //START SERVER
 
