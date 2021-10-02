@@ -27,12 +27,7 @@ for (let index = 0; index < 250; index++) {
 mongoose
   .connect(
     'mongodb://localhost:27018/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false',
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-    },
+    {},
   )
   .then((mongoose) => {
     const db = mongoose.connection.useDb('test');
