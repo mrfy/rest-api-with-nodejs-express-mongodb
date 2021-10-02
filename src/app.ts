@@ -26,12 +26,7 @@ app.use('/reports', reportsRoute);
 
 //MONGODB CONNECTION
 mongoose
-  .connect(process.env.DATABASE_URL as string, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-  })
+  .connect(process.env.DATABASE_URL as string, {})
   .then((mongo) => console.log('MongoDB conected OK 💿', mongo.modelNames()))
   .catch((err: any) => console.log('🚀 error !!', err));
 //START SERVER
